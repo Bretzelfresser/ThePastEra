@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "prehistoric_balling:cooked_goobar_campfire"
+    ]
+  },
+  "criteria": {
+    "hasItem": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "prehistoric_balling:raw_goobar"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "prehistoric_balling:cooked_goobar_campfire"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hasItem",
+      "has_the_recipe"
+    ]
+  ]
+}

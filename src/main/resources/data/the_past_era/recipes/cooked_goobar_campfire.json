@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": {
+    "item": "the_past_era:raw_goobar"
+  },
+  "result": "the_past_era:cooked_goobar",
+  "experience": 0.5,
+  "cookingtime": 100
+}

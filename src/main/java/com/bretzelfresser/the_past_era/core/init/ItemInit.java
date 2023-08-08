@@ -24,5 +24,6 @@ public class ItemInit {
 
     //Spawn Eggs
     public static final RegistryObject<ForgeSpawnEggItem> GOOBAR_SPAWN_EGG = SPAWN_EGGS.register("goobar_spawn_egg", () -> new ForgeSpawnEggItem(EntityInit.GOOBAR::get, 0x343741, 0xffff3e, new Item.Properties().tab(ModItemGroups.FISH)));
+    public static final RegistryObject<ForgeSpawnEggItem> SEA_MOSQUITO_SPAWN_EGG = SPAWN_EGGS.register("sea_mosquito_spawn_egg", () -> new ForgeSpawnEggItem(EntityInit.SEA_MOSQUITO::get, 0x343741, 0xffff3e, new Item.Properties().tab(ModItemGroups.FISH)));
 
 }

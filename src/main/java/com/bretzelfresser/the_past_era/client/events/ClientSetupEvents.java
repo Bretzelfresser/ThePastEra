@@ -7,6 +7,7 @@ import com.bretzelfresser.the_past_era.common.entity.Goobar;
 import com.bretzelfresser.the_past_era.common.entity.SeaMosquito;
 import com.bretzelfresser.the_past_era.core.init.EntityInit;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;

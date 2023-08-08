@@ -1,6 +1,7 @@
 package com.bretzelfresser.the_past_era.common.entity;
 
 import com.bretzelfresser.the_past_era.ThePastEra;
+import com.bretzelfresser.the_past_era.common.entity.ai.GroupFishSwimming;
 import com.bretzelfresser.the_past_era.core.init.ItemInit;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,6 +17,8 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.entity.animal.AbstractSchoolingFish;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -34,28 +37,35 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.Arrays;
 
-public class Goobar extends AbstractSchoolingFish implements IAnimatable {
+public class Goobar extends AbstractFish implements IAnimatable {
 
     public static final String VARIANT_NAME = "goobar_variant", CONTROLLER = "controller";
 
     public static final EntityDataAccessor<Integer> TYPE = SynchedEntityData.defineId(Goobar.class, EntityDataSerializers.INT);
 
 
-    public static AttributeSupplier.Builder createAttributes(){
+    public static AttributeSupplier.Builder createAttributes() {
         return AbstractSchoolingFish.createAttributes().add(Attributes.MOVEMENT_SPEED, 0.4d);
     }
 
     protected AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    public Goobar(EntityType<? extends AbstractSchoolingFish> p_27523_, Level p_27524_) {
+    public Goobar(EntityType<? extends AbstractFish> p_27523_, Level p_27524_) {
         super(p_27523_, p_27524_);
+    }
+
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(4, new GroupFishSwimming(this, .3, 10, new double[]{4d, 1d, 1d, .5d, 5d, 1d}));
     }
 
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData group, @Nullable CompoundTag nbt) {
-        group =  super.finalizeSpawn(level, difficulty, reason, group, nbt);
-        if (reason == MobSpawnType.BUCKET && nbt != null && nbt.contains(VARIANT_NAME)){
+        group = super.finalizeSpawn(level, difficulty, reason, group, nbt);
+        if (reason == MobSpawnType.BUCKET && nbt != null && nbt.contains(VARIANT_NAME)) {
             this.entityData.set(TYPE, nbt.getInt(VARIANT_NAME));
         }
         this.navigation.stop();
@@ -78,7 +88,7 @@ public class Goobar extends AbstractSchoolingFish implements IAnimatable {
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if(nbt.contains(VARIANT_NAME))
+        if (nbt.contains(VARIANT_NAME))
             this.entityData.set(TYPE, nbt.getInt(VARIANT_NAME));
     }
 
@@ -88,22 +98,22 @@ public class Goobar extends AbstractSchoolingFish implements IAnimatable {
         this.entityData.define(TYPE, getInitlaType().ordinal());
     }
 
-    public Type getGoobarType(){
+    public Type getGoobarType() {
         return Type.values()[this.entityData.get(TYPE)];
     }
 
-    protected PlayState predicate(AnimationEvent<Goobar> event){
+    protected PlayState predicate(AnimationEvent<Goobar> event) {
         //System.out.println(!this.isInWater() + "|" + this.onGround + "|" + this.verticalCollision);
-        if(!this.isInWater()){
+        if (!this.isInWater()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("flop", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         double lengthSq = new Vec3(xOld - this.getX(), this.yOld - this.getY(), this.zOld - this.getZ()).lengthSqr();
-        if (lengthSq > 0.00001 && lengthSq < 0.2){
+        if (lengthSq > 0.00001 && lengthSq < 0.2) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
-        }else if (lengthSq >= 0.2){
+        } else if (lengthSq >= 0.2) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("swim_fast", ILoopType.EDefaultLoopTypes.LOOP));
-        }else {
+        } else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
 
@@ -143,7 +153,7 @@ public class Goobar extends AbstractSchoolingFish implements IAnimatable {
         return ItemInit.GOOBAR_BUCKET.get().getDefaultInstance();
     }
 
-    protected Type getInitlaType(){
+    protected Type getInitlaType() {
         int totalWeight = Arrays.stream(Type.values()).mapToInt(Type::getWeight).sum();
         int randomWeight = random.nextInt(totalWeight) + 1;
         int cumulativeWeight = 0;
@@ -160,7 +170,7 @@ public class Goobar extends AbstractSchoolingFish implements IAnimatable {
     }
 
 
-    public enum Type{
+    public enum Type {
         CLOWN(ThePastEra.modLoc("textures/entity/clown_goobar.png"), 5),
         MALESTICATED(ThePastEra.modLoc("textures/entity/malesticed_goobar.png"), 1),
         ROYAL(ThePastEra.modLoc("textures/entity/royal_goobar.png"), 5);
